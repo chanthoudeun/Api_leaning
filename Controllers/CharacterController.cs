@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Api_leaning.Dtos.Character;
 using Api_leaning.Services.CharacterService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api_leaning.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class CharacterController : ControllerBase

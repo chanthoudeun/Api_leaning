@@ -16,5 +16,7 @@ namespace Api_leaning.Models
 
         public RpgClass Class { get; set; } = RpgClass.Knight;
 
+        public MyUser? User { get; set; }
+
     }
 }

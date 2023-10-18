@@ -14,5 +14,6 @@ namespace Api_leaning.Data
         }
         public DbSet<Character> Characters { get; set; }
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<MyUser> MyUser { get; set; }
     }
 }
