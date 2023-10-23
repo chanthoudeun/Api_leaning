@@ -82,7 +82,10 @@ namespace Api_leaning.Services.CharacterService
         public async Task<ServiceResponse<GetCharacterDto>> GetCharacterById(int id)
         {
             var serviceResponse = new ServiceResponse<GetCharacterDto>();
-            var dbcharacter = await _context.Characters.FirstOrDefaultAsync(e => e.Id == id && e.User.Id == GetUserId());
+            var dbcharacter = await _context.Characters
+            .Include(c => c.Weapon)
+            .Include(c => c.Skills)
+            .FirstOrDefaultAsync(e => e.Id == id && e.User.Id == GetUserId());
             serviceResponse.Data = _mapper.Map<GetCharacterDto>(dbcharacter);
             return serviceResponse;
         }
@@ -92,18 +95,26 @@ namespace Api_leaning.Services.CharacterService
             ServiceResponse<GetCharacterDto> response = new ServiceResponse<GetCharacterDto>();
             try
             {
-                var character = await _context.Characters.FirstOrDefaultAsync(c => c.Id == updateCharacter.Id);
+                var character = await _context.Characters.Include(c => c.User).FirstOrDefaultAsync(c => c.Id == updateCharacter.Id);
 
                 // anther way to add variable update
 
-                character.Name = updateCharacter.Name;
-                character.HitPoints = updateCharacter.HitPoints;
-                character.Strength = updateCharacter.Strength;
-                character.Defense = updateCharacter.Defense;
-                character.Intelligence = updateCharacter.Intelligence;
-                character.Class = updateCharacter.Class;
-                await _context.SaveChangesAsync();
-                response.Data = _mapper.Map<GetCharacterDto>(character);
+                if (character.User.Id == GetUserId())
+                {
+                    character.Name = updateCharacter.Name;
+                    character.HitPoints = updateCharacter.HitPoints;
+                    character.Strength = updateCharacter.Strength;
+                    character.Defense = updateCharacter.Defense;
+                    character.Intelligence = updateCharacter.Intelligence;
+                    character.Class = updateCharacter.Class;
+                    await _context.SaveChangesAsync();
+                    response.Data = _mapper.Map<GetCharacterDto>(character);
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "User not found";
+                }
 
             }
             catch (Exception ex)
@@ -113,6 +124,48 @@ namespace Api_leaning.Services.CharacterService
             }
 
             return response;
+
+        }
+
+        public async Task<ServiceResponse<GetCharacterDto>> AddCharacterSkill(AddCharacterSkillDto newCharacterSkill)
+        {
+            var response = new ServiceResponse<GetCharacterDto>();
+            try
+            {
+                var character = await _context.Characters
+                .Include(c => c.Weapon)
+                .Include(c => c.Skills)
+                .FirstOrDefaultAsync(c => c.Id == newCharacterSkill.CharacterId && c.User.Id == GetUserId());
+
+                if (character == null)
+                {
+                    response.Success = false;
+                    response.Message = "User not found";
+                    return response;
+                }
+                var Skill = await _context.Skills.FirstOrDefaultAsync(s => s.Id == newCharacterSkill.SkillId);
+
+                if (Skill == null)
+                {
+                    response.Success = false;
+                    response.Message = "Skill not found";
+                    return response;
+
+                }
+                character.Skills.Add(Skill);
+                await _context.SaveChangesAsync();
+                response.Data = _mapper.Map<GetCharacterDto>(character);
+
+
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+
 
         }
     }

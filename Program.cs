@@ -1,6 +1,8 @@
 global using Api_leaning.Models;
 using Api_leaning.Data;
 using Api_leaning.Services.CharacterService;
+using Api_leaning.Services.FightService;
+using Api_leaning.Services.WeaponService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -39,7 +41,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
     };
 });
-
+builder.Services.AddScoped<IWeaponService, WeaponService>();
+builder.Services.AddScoped<IFightService, FightService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
