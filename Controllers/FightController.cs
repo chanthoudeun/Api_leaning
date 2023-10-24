@@ -25,5 +25,26 @@ namespace Api_leaning.Controllers
         {
             return Ok(await _fightService.WeaponAttack(request));
         }
+
+        [HttpPost("Skill")]
+
+        public async Task<ActionResult<ServiceResponse<AttackResultDto>>> SkillAcctack(SkillAttackDto request)
+        {
+            return Ok(await _fightService.SkillAttack(request));
+        }
+
+        [HttpPost]
+
+        public async Task<ActionResult<ServiceResponse<FightResultDto>>> Fight(FightRequestDto request)
+        {
+            return Ok(await _fightService.Fight(request));
+        }
+
+        [HttpGet]
+
+        public async Task<ActionResult<ServiceResponse<List<HightScoreDto>>>> GetHighScore()
+        {
+            return Ok(await _fightService.GetHighScore());
+        }
     }
 }

@@ -9,5 +9,8 @@ namespace Api_leaning.Services.FightService
     public interface IFightService
     {
         Task<ServiceResponse<AttackResultDto>> WeaponAttack(WeaponAttackDto weaponAttack);
+        Task<ServiceResponse<AttackResultDto>> SkillAttack(SkillAttackDto skillAttack);
+        Task<ServiceResponse<FightResultDto>> Fight(FightRequestDto request);
+        Task<ServiceResponse<List<HightScoreDto>>> GetHighScore();
     }
 }
